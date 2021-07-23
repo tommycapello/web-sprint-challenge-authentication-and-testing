@@ -76,7 +76,7 @@ router.post('/login', checkBody, (req, res, next) => {
           const token = tokenBuilder(user)
           // the client will provide token in future requests
           res.status(200).json({
-            message: `Welcome,${user.username}!`,
+            message: `Welcome, ${user.username}!`,
             token,
           });
         } else {
