@@ -38,10 +38,10 @@ router.post('/register', checkBody, validateUniqueUser, (req, res, next) => {
     res.status(201).json(newUser)
   })
   .catch(next)
-  
+
 });
 
-router.post('/login', (req, res) => {
+router.post('/login',checkBody, (req, res, next) => {
   res.end('implement login, please!');
   /*
     IMPLEMENT
