@@ -30,11 +30,12 @@ const checkBody = (req, res, next) => {
 
 const checkUsernameExists = async (req, res, next) => {
    try{
-     const [username] = await Auth.findByUsername(req.body.username)
-     if(!username){
+     const user = await Auth.findByUsername(req.body.username)
+     if(!user){
        next({status:401, message:"invalid credentials"})
      }
      else{
+       req.user = user
        next()
      }
    }
