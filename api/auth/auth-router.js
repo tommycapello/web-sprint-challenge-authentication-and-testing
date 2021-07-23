@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const {checkBody, validateUniqueUser} = require('./auth-middleware')
+const {checkBody, validateUniqueUser, checkUsernameExists} = require('./auth-middleware')
 const bcrypt = require('bcrypt')
 const Auth = require('./auth-model')
 const jwt = require('jsonwebtoken')
@@ -43,7 +43,7 @@ router.post('/register', checkBody, validateUniqueUser, (req, res, next) => {
 
 });
 
-router.post('/login', checkBody, (req, res, next) => {
+router.post('/login', checkBody, checkUsernameExists, (req, res, next) => {
 
   /*
     IMPLEMENT
@@ -68,22 +68,16 @@ router.post('/login', checkBody, (req, res, next) => {
     4- On FAILED login due to `username` not existing in the db, or `password` being incorrect,
       the response body should include a string exactly as follows: "invalid credentials".
   */
-      let { username, password } = req.body;
-      Auth.findByUsername(username)
-      .then(([user]) => {
-        if (user && bcrypt.compareSync(password, user.password)) {
-          // generate a token and send it back
-          const token = tokenBuilder(user)
-          // the client will provide token in future requests
-          res.status(200).json({
-            message: `Welcome, ${user.username}!`,
-            token,
-          });
-        } else {
-          next({ status: 401, message: 'invalid credentials' });
-        }
-      })
-      .catch(next)
+      if(bcrypt.compareSync(req.body.password, req.user.password)){
+        const token = tokenBuilder(req.user)
+        res.json({
+          message: `Welcome, ${req.user.username}`,
+          token
+        })
+      }
+      else{
+        next({status:401, message:'invalid credentials'})
+      }
 });
 
 module.exports = router;
