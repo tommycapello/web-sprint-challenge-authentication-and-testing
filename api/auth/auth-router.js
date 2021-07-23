@@ -3,7 +3,7 @@ const {checkBody, validateUniqueUser} = require('./auth-middleware')
 const bcrypt = require('bcrypt')
 const Auth = require('./auth-model')
 
-router.post('/register', checkBody, (req, res, next) => {
+router.post('/register', checkBody, validateUniqueUser, (req, res, next) => {
   /*
     IMPLEMENT
     You are welcome to build additional middlewares to help with the endpoint's functionality.
@@ -31,10 +31,14 @@ router.post('/register', checkBody, (req, res, next) => {
   */
 
   const { username, password } = req.body
+
   const hash = bcrypt.hashSync(password, 8)
-  Auth.addUser({ username, password })
-  .then()
+  Auth.addUser({ username, password: hash })
+  .then(newUser => {
+    res.status(201).json(newUser)
+  })
   .catch(next)
+  
 });
 
 router.post('/login', (req, res) => {

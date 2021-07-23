@@ -1,6 +1,15 @@
+const Auth = require('./auth-model')
 
-const validateUniqueUser = () => {
 
+const validateUniqueUser = async (req, res, next) => {
+  const {username} = req.body
+  const existingUser = await Auth.findByUsername(username)
+  if(!existingUser){
+    next({message:'username taken'})
+  }
+  else{
+    next()
+  }
 }
 
 const checkBody = (req, res, next) => {
