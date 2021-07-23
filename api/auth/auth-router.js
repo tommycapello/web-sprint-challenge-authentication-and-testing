@@ -2,7 +2,6 @@ const router = require('express').Router();
 const {checkBody, validateUniqueUser, checkUsernameExists} = require('./auth-middleware')
 const bcrypt = require('bcrypt')
 const Auth = require('./auth-model')
-const jwt = require('jsonwebtoken')
 const tokenBuilder = require('./token-builder')
 
 router.post('/register', checkBody, validateUniqueUser, (req, res, next) => {
