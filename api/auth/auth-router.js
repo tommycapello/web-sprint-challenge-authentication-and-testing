@@ -3,6 +3,7 @@ const {checkBody, validateUniqueUser} = require('./auth-middleware')
 const bcrypt = require('bcrypt')
 const Auth = require('./auth-model')
 const jwt = require('jsonwebtoken')
+const tokenBuilder = require('./token-builder')
 
 router.post('/register', checkBody, validateUniqueUser, (req, res, next) => {
   /*
@@ -79,7 +80,7 @@ router.post('/login', checkBody, (req, res, next) => {
             token,
           });
         } else {
-          next({ status: 401, message: 'Invalid Credentials' });
+          next({ status: 401, message: 'invalid credentials' });
         }
       })
       .catch(next)
